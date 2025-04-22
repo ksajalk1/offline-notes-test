@@ -53,11 +53,14 @@ export async function submitNote(note: Note) {
       });
 
       if (response.ok) {
-        console.log('Note submitted successfully');
-        await response.json().then(async (data) => {
-          note._id = data.insertedId;
-          await editOfflineNote(note);
-        });
+        console.log('Note submitted successfully (API responded)');
+        // await response.json().then(async (data) => {
+          // TODO: Candidate should uncomment and potentially adjust this block
+          //       once the backend API is implemented and returns a real database ID.
+          //       This marks the note as synced by storing the backend ID locally.
+          // note._id = data.insertedId;
+          // await editOfflineNote(note);
+        // });
       } else {
         console.error('Failed to submit note');
       }
@@ -179,17 +182,30 @@ export async function refreshNotes() {
             await axios.delete(`/api/delete-note?id=${localNote._id}`);
           }
         } else if (localNote._id === undefined) {
-          const submittedNoteResponse = await fetch('/api/save-note', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(createServerNote(localNote)),
-          });
-          await submittedNoteResponse.json().then(async (data) => {
-            localNote._id = data.insertedId;
-            await editOfflineNote(localNote);
-          });
+          // Attempt to submit unsynced local note
+          try {
+            const submittedNoteResponse = await fetch('/api/save-note', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(createServerNote(localNote)),
+            });
+
+            if (submittedNoteResponse.ok) {
+              console.log(`Synced local note ${localNote.localId} during refresh.`);
+              // await submittedNoteResponse.json().then(async (data) => {
+                // TODO: Candidate should uncomment and potentially adjust this block
+                //       once the backend API is implemented and returns a real database ID.
+                // localNote._id = data.insertedId;
+                // await editOfflineNote(localNote);
+              // });
+            } else {
+               console.error(`Failed to sync local note ${localNote.localId} during refresh:`, submittedNoteResponse.statusText);
+            }
+          } catch (error) {
+             console.error(`Error syncing local note ${localNote.localId} during refresh:`, error);
+          }
         }
       }
   
