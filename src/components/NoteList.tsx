@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Container, Heading } from '../styles/styled';
 import { SpinnerContainer } from './LoadingSpinner';
-import { pusherClient } from '../utils/pusher'
 import { Note,
   createNote, submitNote, deleteNote, editNote, refreshNotes, getNotes,
-  updateSavedNote, updateEditedNote, updateDeletedNote
 } from '../utils/notes'
 
 import styled from 'styled-components';
@@ -96,29 +94,7 @@ export default function NoteList() {
       await fetchNotes();
     })
 
-    const channel = pusherClient?.subscribe('notes2');
-
-    if (channel) {
-      channel.bind('note-saved', async (savedNote: Note) => {
-        updateSavedNote(savedNote, await getNotes());
-        setAllNotes(await getNotes());
-      });
-
-      channel.bind('note-updated', async (updatedNote: Note) => {
-        updateEditedNote(updatedNote, await getNotes());
-        setAllNotes(await getNotes());
-      });
-      
-      channel.bind('note-deleted', async (deletedNoteId: number) => {
-        updateDeletedNote(deletedNoteId, await getNotes());
-        setAllNotes(await getNotes());
-      });
-    }
-
-    return () => {
-      pusherClient?.unsubscribe('notes2');
-    };
-  }, [handleNoteSubmit, fetchNotes]);
+  }, [fetchNotes]);
 
   return (
     <NotesContainer>

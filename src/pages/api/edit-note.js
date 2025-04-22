@@ -1,6 +1,3 @@
-// Remove JSON DB imports
-// import { readDb, writeDb } from '../../utils/jsonDb';
-import { getPusherServer } from '../../utils/pusher';
 
 export default async function handler(req, res) {
   if (req.method === 'PUT') {
@@ -20,13 +17,8 @@ export default async function handler(req, res) {
       // - Replace the example response below.
 
       const noteFound = true; // Placeholder
-      const updatedNoteData = { _id: id, title: noteTitle }; // Example data for Pusher
 
       if (noteFound) {
-        // TODO: Trigger Pusher event after successful update (optional).
-        const pusherServer = getPusherServer();
-        await pusherServer.trigger('notes2', 'note-updated', updatedNoteData);
-
         res.status(200).json({ message: 'Note edited successfully' });
       } else {
         res.status(404).json({ error: 'Note not found' });

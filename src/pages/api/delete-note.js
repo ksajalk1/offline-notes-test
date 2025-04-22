@@ -1,6 +1,3 @@
-// Remove JSON DB imports
-// import { readDb, writeDb } from '../../utils/jsonDb';
-import { getPusherServer } from '../../utils/pusher';
 
 export default async function handler(req, res) {
   if (req.method === 'DELETE') {
@@ -20,10 +17,6 @@ export default async function handler(req, res) {
       const noteFound = true; // Placeholder
 
       if (noteFound) {
-        // TODO: Trigger Pusher event after successful delete (optional).
-        const pusherServer = getPusherServer();
-        await pusherServer.trigger('notes2', 'note-deleted', id ); // Send the ID of the deleted note
-
         res.status(200).json({ message: 'Note deleted successfully' });
       } else {
         res.status(404).json({ error: 'Note not found' });

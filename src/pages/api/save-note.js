@@ -1,6 +1,3 @@
-// Remove JSON DB imports
-// import { readDb, writeDb } from '../../utils/jsonDb';
-import { getPusherServer } from '../../utils/pusher'; // Keep Pusher for potential real-time trigger
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -19,11 +16,6 @@ export default async function handler(req, res) {
       // - Replace the example response below with the actual assigned identifier.
       
       const insertedId = noteData.localId; // Placeholder: Use localId as temporary example ID
-      const savedNoteData = { ...noteData, _id: insertedId }; // Include the ID for Pusher
-
-      // TODO: Trigger Pusher event after successful save (optional but needed for real-time updates).
-      const pusherServer = getPusherServer();
-      await pusherServer.trigger('notes2', 'note-saved', savedNoteData); // Send data including the ID
 
       // Respond with the identifier the client expects
       res.status(200).json({ insertedId: insertedId });
