@@ -79,39 +79,39 @@ Your goal is to enhance this application by implementing the backend data store 
 
 **Requirements:**
 
-**0. Implement the Backend Data Store:**
-    *   **This is the foundational task.** Choose a data store for the backend (e.g., MongoDB, PostgreSQL, SQLite, or even a simple JSON file if you want).
-    *   Implement the logic within the placeholder comments in the API routes (`src/pages/api/notes.js`, `save-note.js`, `edit-note.js`, `delete-note.js`) to perform the necessary CRUD operations (Create, Read, Update, Delete) using your chosen data store.
-    *   Ensure the API routes correctly interact with the client-side expectations (e.g., `save-note.js` should return the ID assigned by your data store).
+0. **Implement the Backend Data Store:**
+    - **This is the foundational task.** Choose a data store for the backend (e.g., MongoDB, PostgreSQL, SQLite, or even a simple JSON file if you want).
+    - Implement the logic within the placeholder comments in the API routes (`src/pages/api/notes.js`, `save-note.js`, `edit-note.js`, `delete-note.js`) to perform the necessary CRUD operations (Create, Read, Update, Delete) using your chosen data store.
+    -   Ensure the API routes correctly interact with the client-side expectations (e.g., `save-note.js` should return the ID assigned by your data store).
 
-**1. Tag Implementation:**
-    *   Allow users to add/remove simple string tags to individual notes. You can choose the UI for adding/displaying tags (e.g., input field, predefined list).
-    *   Store the tag data associated with each note (this should work with both your backend data store and the local IndexedDB storage).
+1. **Tag Implementation:**
+    -   Allow users to add/remove simple string tags to individual notes. You can choose the UI for adding/displaying tags (e.g., input field, predefined list).
+    -   Store the tag data associated with each note (this should work with both your backend data store and the local IndexedDB storage).
 
-**2. Filtering Implementation:**
-    *   Provide a UI mechanism (e.g., dropdown, checkboxes) to allow users to select one or more tags to filter the main note list.
-    *   The filtering logic must operate purely on the **client-side** based on the notes currently loaded/available locally in IndexedDB.
+2. **Filtering Implementation:**
+    -   Provide a UI mechanism (e.g., dropdown, checkboxes) to allow users to select one or more tags to filter the main note list.
+    -   The filtering logic must operate purely on the **client-side** based on the notes currently loaded/available locally in IndexedDB.
 
-**3. State Management Constraint:**
-    *   Implement all required state management for the tagging and filtering features using **native React hooks** (`useState`, `useEffect`, `useCallback`, `useContext` etc.). Do **not** use external state management libraries like Redux, Zustand, etc.
+3. **State Management Constraint:**
+    -   Implement all required state management for the tagging and filtering features using **native React hooks** (`useState`, `useEffect`, `useCallback`, `useContext` etc.). Do **not** use external state management libraries like Redux, Zustand, etc.
 
-**4. Conflict Detection:**
-    *   Implement logic within `src/utils/notes.ts` (likely in `refreshNotes` or related functions) to detect potential conflicts. A conflict occurs when a note has been modified locally while offline *and* the same note has also been modified on the server (in the data store you implemented) since the last sync.
-    *   Define what constitutes a "conflict" (e.g., different titles, different content/tags).
-    *   **For this task, simply detecting and logging the conflict is sufficient.** You do *not* need to implement a full conflict resolution UI, but you should think about how you *would* resolve it (see Deliverables).
+4. **Conflict Detection:**
+    -   Implement logic within `src/utils/notes.ts` (likely in `refreshNotes` or related functions) to detect potential conflicts. A conflict occurs when a note has been modified locally while offline *and* the same note has also been modified on the server (in the data store you implemented) since the last sync.
+    -   Define what constitutes a "conflict" (e.g., different titles, different content/tags).
+    -   **For this task, simply detecting and logging the conflict is sufficient.** You do *not* need to implement a full conflict resolution UI, but you should think about how you *would* resolve it (see Deliverables).
 
-**5. UI Cleanup:**
-    *   The current UI is very basic. Improve the visual presentation and user experience. You are encouraged to use **Tailwind CSS** (it's already installed) for styling, but you can also continue using styled-components if preferred. Make it look more polished.
+5. **UI Cleanup:**
+    -   The current UI is very basic. Improve the visual presentation and user experience. You are encouraged to use **Tailwind CSS** (it's already installed) for styling, but you can also continue using styled-components if preferred. Make it look more polished.
 
 **Deliverables:**
 
 1.  A link to your Git repository (your fork) containing your completed implementation.
 2.  **Crucially:** Update *this* `README.md` file in your repository to include:
-    *   Details on the backend data store you chose and why. Add any necessary updates to the "How to Run" section based on your data store choice (e.g., specific environment variables).
-    *   An explanation of how you managed the state for tagging and filtering.
-    *   Details on how you integrated tag storage with both the backend and the existing offline IndexedDB mechanism. How did you structure the notes data with the tag data. What are the pros and cons for that structure.
-    *   An explanation of your conflict detection logic (how you identify conflicting notes).
-    *   A brief description of your proposed conflict *resolution* strategy (even though you don't need to implement the UI for it).
+    -   Details on the backend data store you chose and why. Add any necessary updates to the "How to Run" section based on your data store choice (e.g., specific environment variables).
+    -   An explanation of how you managed the state for tagging and filtering.
+    -   Details on how you integrated tag storage with both the backend and the existing offline IndexedDB mechanism. How did you structure the notes data with the tag data. What are the pros and cons for that structure.
+    -   An explanation of your conflict detection logic (how you identify conflicting notes).
+    -   A brief description of your proposed conflict *resolution* strategy (even though you don't need to implement the UI for it).
 3. Feel free to update this codebase as you choose. If you want to update something or fix something, you can do that. Just document what you did.
 
 Good luck!
