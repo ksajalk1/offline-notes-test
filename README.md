@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Offline Notes App - Interview Task
 
-## Getting Started
+## 1. How to Run the App
 
-First, run the development server:
+This application is built using Next.js.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+1.  **Clone/Fork:**
+    ```bash
+    git clone https://github.com/ksajalk1/offline-notes-test
+    cd offline-notes-test
+    ```
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+3.  **Run Development Server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 2. Current Architecture
+
+This is a note-taking application designed to work offline first.
+
+**Key Components:**
+
+*   **Frontend:** Built with [Next.js](https://nextjs.org/), [React](https://reactjs.org/), and [TypeScript](https://www.typescriptlang.org/).
+*   **Offline Storage:** Uses the browser's **IndexedDB** to store notes locally. This allows the core functionality (create, read, update, delete notes) to work even when offline.
+*   **Synchronization:**
+    *   The app detects online/offline status using `navigator.onLine`.
+    *   A **Service Worker** (`public/sw.js`, registered in `src/components/NoteList.tsx`) is set up to handle background sync events when the application comes online.
+    *   The `refreshNotes` function in `src/utils/notes.ts` attempts to fetch data from the server API and reconcile local (IndexedDB) and server states.
+*   **Backend API:** Next.js API routes are defined in `src/pages/api/`. These are intended to interact with a persistent data store.
+*   **UI:** Basic React components located in `src/components`.
+
+**What Works:**
+
+*   Creating, viewing, editing, and deleting notes while offline. Changes are saved to IndexedDB.
+*   Basic detection of online/offline status.
+*   The framework for triggering synchronization exists (Service Worker, `refreshNotes` function).
+
+**What's Missing:**
+
+*   **Backend Data Store Implementation:** The API routes (`src/pages/api/notes.js`, `save-note.js`, `edit-note.js`, `delete-note.js`) currently contain **placeholder comments** (`// TODO: Implement logic...`). **There is no actual database or persistent storage connected on the backend.** These API routes need to be implemented to interact with a data store of your choice.
+
+**Architecture Diagram:**
+
+```mermaid
+graph LR
+    subgraph Browser
+        Client[Next.js Client]
+        SW[Service Worker]
+        IDB[(IndexedDB)]
+    end
+
+    subgraph Server
+        ServerAPI[Next.js Server API]
+    end
+
+    subgraph Data Store
+        DS[(? Your Data Store ?)]
+    end
+
+    Client -- Uses/Stores --> IDB
+    Client -- Registers/Listens --> SW
+    Client -- API Calls --> ServerAPI
+    SW -- Sync Events --> Client
+    ServerAPI -- Needs Implementation --> DS
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 3. Your Tasks
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Your goal is to enhance this application by implementing the backend data store and adding new features. Create a fork of this repository and implement the following tasks on your fork.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+**Requirements:**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**0. Implement the Backend Data Store:**
+    *   **This is the foundational task.** Choose a data store for the backend (e.g., MongoDB, PostgreSQL, SQLite, or even a simple JSON file if you want).
+    *   Implement the logic within the placeholder comments in the API routes (`src/pages/api/notes.js`, `save-note.js`, `edit-note.js`, `delete-note.js`) to perform the necessary CRUD operations (Create, Read, Update, Delete) using your chosen data store.
+    *   Ensure the API routes correctly interact with the client-side expectations (e.g., `save-note.js` should return the ID assigned by your data store).
 
-## Learn More
+**1. Tag Implementation:**
+    *   Allow users to add/remove simple string tags to individual notes. You can choose the UI for adding/displaying tags (e.g., input field, predefined list).
+    *   Store the tag data associated with each note (this should work with both your backend data store and the local IndexedDB storage).
 
-To learn more about Next.js, take a look at the following resources:
+**2. Filtering Implementation:**
+    *   Provide a UI mechanism (e.g., dropdown, checkboxes) to allow users to select one or more tags to filter the main note list.
+    *   The filtering logic must operate purely on the **client-side** based on the notes currently loaded/available locally in IndexedDB.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**3. State Management Constraint:**
+    *   Implement all required state management for the tagging and filtering features using **native React hooks** (`useState`, `useEffect`, `useCallback`, `useContext` etc.). Do **not** use external state management libraries like Redux, Zustand, etc.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+**4. Conflict Detection:**
+    *   Implement logic within `src/utils/notes.ts` (likely in `refreshNotes` or related functions) to detect potential conflicts. A conflict occurs when a note has been modified locally while offline *and* the same note has also been modified on the server (in the data store you implemented) since the last sync.
+    *   Define what constitutes a "conflict" (e.g., different titles, different content/tags).
+    *   **For this task, simply detecting and logging the conflict is sufficient.** You do *not* need to implement a full conflict resolution UI, but you should think about how you *would* resolve it (see Deliverables).
 
-## Deploy on Vercel
+**5. UI Cleanup:**
+    *   The current UI is very basic. Improve the visual presentation and user experience. You are encouraged to use **Tailwind CSS** (it's already installed) for styling, but you can also continue using styled-components if preferred. Make it look more polished.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Deliverables:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1.  A link to your Git repository (your fork) containing your completed implementation.
+2.  **Crucially:** Update *this* `README.md` file in your repository to include:
+    *   Details on the backend data store you chose and why. Add any necessary updates to the "How to Run" section based on your data store choice (e.g., specific environment variables).
+    *   An explanation of how you managed the state for tagging and filtering.
+    *   Details on how you integrated tag storage with both the backend and the existing offline IndexedDB mechanism. How did you structure the notes data with the tag data. What are the pros and cons for that structure.
+    *   An explanation of your conflict detection logic (how you identify conflicting notes).
+    *   A brief description of your proposed conflict *resolution* strategy (even though you don't need to implement the UI for it).
+3. Feel free to update this codebase as you choose. If you want to update something or fix something, you can do that. Just document what you did.
+
+Good luck!
